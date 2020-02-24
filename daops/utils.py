@@ -4,6 +4,8 @@ import glob
 import xarray as xr
 
 
+DATA_ROOT_DIR = '/Users/pingu/data/'
+
 def _wrap_sequence(obj):
     if isinstance(obj, str):
         obj = [obj]
@@ -45,10 +47,10 @@ def _consolidate_data_ref(dref):
         return dref
 
     if dref.find('cmip5') > -1:
-        dref = '/badc/cmip5/data/' + dref.replace('.', '/') + '/*.nc'
+        dref = DATA_ROOT_DIR + dref.replace('.', '/') + '/*.nc'
 
     return dref
- 
+
 
 def consolidate(data_refs, **kwargs):
     data_refs = _wrap_sequence(data_refs)
@@ -68,7 +70,7 @@ def consolidate(data_refs, **kwargs):
             for i, fpath in enumerate(file_paths):
                 print(f'[INFO] File {i}: {fpath}')
                 ds = xr.open_dataset(fpath)
-                 
+
                 found_years = set([int(_) for _ in ds.time.dt.year])
 
                 if required_years.intersection(found_years):
@@ -87,7 +89,7 @@ def normalise(data_refs):
     norm_dsets = collections.OrderedDict()
 
     for data_ref, file_paths in data_refs.items():
-        xr_dset = xr.open_mfdataset(file_paths)
+        xr_dset = xr.open_mfdataset(file_paths, combine='by_coords')
         norm_dsets[data_ref] = xr_dset
 
     return norm_dsets
@@ -104,5 +106,3 @@ class ResultSet(object):
     def add(self, data_ref, result):
         self._results[data_ref] = result
         self.file_paths.append(result)
-
-
