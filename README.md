@@ -4,19 +4,34 @@ Prototype for 34e libraries and interfaces
 
 ## Installation
 
-Use Python 3.7
+Use Python 3.7.
 
-And install dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-Set some useful environment variables:
+And run the installation:
 
 ```
-export PYTHONPATH=.
-export PYTHONWARNINGS=ignore
+pip install .
+```
+
+Or in development mode:
+
+```
+pip install -e .
+pip install -r requirements_dev.txt
+```
+
+### Use a conda environment
+
+You can use conda environment with Python 3.7.
+
+```
+conda create -n daops python=3.7 pip xarray
+conda activate daops
+```
+
+Run the installation:
+
+```
+pip install -e .[dev]
 ```
 
 ### JASMIN-specific installation
@@ -55,6 +70,3 @@ Datasets used for testing are:
 1. cmip5.output1.MOHC.HadGEM2-ES.rcp85.mon.atmos.Amon.r1i1p1.latest.tas
  @CEDA: /badc/cmip5/data/cmip5/output1/MOHC/HadGEM2-ES/rcp85/mon/atmos/Amon/r1i1p1/latest/tas/*.nc
 ```
-
-
-
