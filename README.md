@@ -21,7 +21,7 @@ pip install -r requirements_dev.txt
 
 ### Use a conda environment
 
-You can use conda environment with Python 3.7.
+You can use a conda environment with Python 3.7.
 
 ```
 conda create -n daops python=3.7 pip xarray
@@ -31,7 +31,7 @@ conda activate daops
 Run the installation:
 
 ```
-pip install -e .[dev]
+pip install -e .
 ```
 
 ### JASMIN-specific installation
@@ -59,7 +59,7 @@ export PYTHONWARNINGS=ignore
 ## Testing
 
 ```
-pytest -v test
+pytest -v tests
 ```
 
 ### Test datasets
