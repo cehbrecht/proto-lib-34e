@@ -1,4 +1,7 @@
-from collections import OrderedDict
+import collections
+import glob
+
+import xarray as xr
 
 
 def _wrap_sequence(obj):
@@ -24,7 +27,7 @@ def is_characterised(data_refs, require_all=False):
     :return: Ordered Dictionary OR Boolean (if `require_all` is True)
     """
     data_refs = _wrap_sequence(data_refs)
-    resp = OrderedDict()
+    resp = collections.OrderedDict()
 
     for dref in data_refs:
         _is_char = is_dataref_characterised(dref)
@@ -37,19 +40,69 @@ def is_characterised(data_refs, require_all=False):
     return resp
 
 
-def consolidate(data_refs):
-    return data_refs
+def _consolidate_data_ref(dref):
+    if dref[0] == '/':
+        return dref
+
+    if dref.find('cmip5') > -1:
+        dref = '/badc/cmip5/data/' + dref.replace('.', '/') + '/*.nc'
+
+    return dref
+ 
+
+def consolidate(data_refs, **kwargs):
+    data_refs = _wrap_sequence(data_refs)
+    filtered_refs = collections.OrderedDict()
+
+    for dref in data_refs:
+
+        consolidated = _consolidate_data_ref(dref)
+
+        if 'time' in kwargs:
+            required_years = set(range(*[int(_.split('-')[0]) for _ in kwargs['time']]))
+
+            file_paths = glob.glob(consolidated)
+            print(f'[INFO] Testing {len(file_paths)} files in time range: ...')
+            files_in_range = []
+
+            for i, fpath in enumerate(file_paths):
+                print(f'[INFO] File {i}: {fpath}')
+                ds = xr.open_dataset(fpath)
+                 
+                found_years = set([int(_) for _ in ds.time.dt.year])
+
+                if required_years.intersection(found_years):
+                    files_in_range.append(fpath)
+
+            print(f'[INFO] Kept {len(files_in_range)} files')
+            consolidated = files_in_range[:]
+
+        filtered_refs[dref] = consolidated
+
+    return filtered_refs
 
 
 def normalise(data_refs):
-    return [xr.open_mfdataset(data_ref) for data_ref in data_refs]
+    print(f'[INFO] Working on data refs: {data_refs}')
+    norm_dsets = collections.OrderedDict()
+
+    for data_ref, file_paths in data_refs.items():
+        xr_dset = xr.open_mfdataset(file_paths)
+        norm_dsets[data_ref] = xr_dset
+
+    return norm_dsets
 
 
 class ResultSet(object):
 
-    def __init__(self):
-        self._results = OrderedDict()
+
+    def __init__(self, inputs=None):
+        self._results = collections.OrderedDict()
+        self.metadata = {'inputs': inputs, 'process': 'something', 'version': 0.1}
+        self.file_paths = []
 
     def add(self, data_ref, result):
         self._results[data_ref] = result
+        self.file_paths.append(result)
+
 

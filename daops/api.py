@@ -28,18 +28,19 @@ def subset(data_refs, time=None, space=None, level=None,
     :return:
     """
     # Consolidate data inputs so they can be passed to Xarray
-    data_refs = consolidate(data_refs)
+    data_refs = consolidate(data_refs, time=time)
     # Normalise (i.e. "fix") data inputs based on their "character"
     norm_dsets = normalise(data_refs)
 
-    rs = ResultSet()
+    rs = ResultSet(vars())
 
-    for norm_dset in norm_dsets:
+    for data_ref, norm_dset in norm_dsets.items():
 
         # Process each input dataset (either in series or parallel)
         rs.add(
+            data_ref,
             process(
-                clisops.general_subset, norm_dset, {
+                clisops.general_subset, norm_dset, **{
                     'time': time,
                     'space': space,
                     'level': level,
@@ -48,7 +49,8 @@ def subset(data_refs, time=None, space=None, level=None,
                     'chunk_rules': chunk_rules,
                     'filenamer': filenamer
                 }
-            ))
+            )
+        )
 
     return rs
 
