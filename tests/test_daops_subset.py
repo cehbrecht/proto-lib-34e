@@ -7,6 +7,7 @@ def test_subset_t():
     result = daops.subset(CMIP5_ID1,
                           time=('2085-01-01', '2120-12-30'),
                           output_dir='outputs')
+    assert result.file_paths == ['outputs/output.nc']
 
 def test_subset_t_y_x():
     result = daops.subset(CMIP5_ID1,
