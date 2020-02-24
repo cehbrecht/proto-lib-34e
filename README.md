@@ -24,7 +24,7 @@ pip install -r requirements_dev.txt
 You can use a conda environment with Python 3.7.
 
 ```
-conda create -n daops python=3.7 pip xarray
+conda env create -f environment.yml
 conda activate daops
 ```
 
