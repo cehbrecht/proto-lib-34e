@@ -4,8 +4,6 @@ import glob
 import xarray as xr
 
 
-DATA_ROOT_DIR = '/Users/pingu/data/'
-
 def _wrap_sequence(obj):
     if isinstance(obj, str):
         obj = [obj]
@@ -42,23 +40,23 @@ def is_characterised(data_refs, require_all=False):
     return resp
 
 
-def _consolidate_data_ref(dref):
+def _consolidate_data_ref(dref, data_root_dir=None):
     if dref[0] == '/':
         return dref
 
-    if dref.find('cmip5') > -1:
-        dref = DATA_ROOT_DIR + dref.replace('.', '/') + '/*.nc'
+    if dref.find('cmip5') > -1 and data_root_dir is not None:
+        dref = data_root_dir + dref.replace('.', '/') + '/*.nc'
 
     return dref
 
 
-def consolidate(data_refs, **kwargs):
+def consolidate(data_refs, data_root_dir, **kwargs):
     data_refs = _wrap_sequence(data_refs)
     filtered_refs = collections.OrderedDict()
 
     for dref in data_refs:
 
-        consolidated = _consolidate_data_ref(dref)
+        consolidated = _consolidate_data_ref(dref, data_root_dir)
 
         if 'time' in kwargs:
             required_years = set(range(*[int(_.split('-')[0]) for _ in kwargs['time']]))
