@@ -45,7 +45,7 @@ def _consolidate_data_ref(dref, data_root_dir=None):
         return dref
 
     if dref.find('cmip5') > -1 and data_root_dir is not None:
-        dref = data_root_dir + dref.replace('.', '/') + '/*.nc'
+        dref = data_root_dir.rstrip('/') + '/' + dref.replace('.', '/') + '/*.nc'
 
     return dref
 
