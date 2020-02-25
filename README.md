@@ -58,6 +58,12 @@ export PYTHONWARNINGS=ignore
 
 ## Testing
 
+Configure the data root:
+```
+export CMIP5_ARCHIVE_BASE=/badc/cmip5/data/
+```
+
+And run the tests:
 ```
 pytest -v tests
 ```
