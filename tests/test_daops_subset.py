@@ -21,3 +21,10 @@ def test_subset_t_y_x():
                           space=('-20', '-10', '5', '15'),
                           data_root_dir=CMIP5_ARCHIVE_BASE,
                           output_dir='outputs')
+
+@pytest.mark.skip('FAILS - needs fixing by bringing range into calendar range')
+def test_subset_t_with_invalid_date():
+    result = daops.subset(CMIP5_ID1,
+                          time=('2085-01-01', '2120-12-31'),
+                          data_root_dir=CMIP5_ARCHIVE_BASE,
+                          output_dir='outputs')
