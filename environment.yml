@@ -6,7 +6,7 @@ channels:
 dependencies:
   - python=3.7
   - pip
-  - xarray
+  - xarray>=0.15
   - dask
   - netcdf4
   # tests
