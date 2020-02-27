@@ -109,7 +109,7 @@ def resolve_import(import_path):
 
 class Fixer(object):
 
-    FIX_DIR = './fixes'
+    FIX_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'fixes')
 
     def __init__(self, ds_id):
         self.ds_id = ds_id
